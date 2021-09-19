@@ -21,7 +21,10 @@ fps = 60
 # Preparing the screen and the background
 screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
 background = pygame.image.load("Images/background.png")
-mixer.music.load('Sounds/bgmusic.mp3')
+try:
+	mixer.music.load('Sounds/bgmusic.mp3')
+except pygame.error:
+	mixer.music.load('Sounds/bgmusic.wav')
 mixer.music.play(-1)
 
 pygame.display.set_caption("Catch the Starfish")
@@ -61,8 +64,8 @@ for _ in range(4):
 
 # Variables to display score and game over text
 score_value = 0
-font = pygame.font.Font('Arial.ttf', 32)
-over_font = pygame.font.Font('Arial.ttf', 70)
+font = pygame.font.Font('ARIAL.TTF', 32)
+over_font = pygame.font.Font('ARIAL.TTF', 70)
 
 # Functions
 def show_score(x, y):
