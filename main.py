@@ -16,7 +16,9 @@ SCREENHEIGHT = 600
 black = (0, 0, 0)
 player_vel = 5
 target_vel = 2
+num_targets = 5
 enemy_vel = 2
+num_enemies = 5
 fps = 60
 target_fps = 60
 
@@ -46,7 +48,7 @@ targetX = []
 targetY = []
 targetY_change = []
 
-for _ in range(4):
+for _ in range(num_targets):
     targetImgs.append(pygame.image.load("Images/starfish.png"))
     targetX.append(random.randint(0, SCREENWIDTH - 32))
     targetY.append(random.randint(0, 20))
@@ -58,7 +60,7 @@ enemyX = []
 enemyY = []
 enemyY_change = []
 
-for _ in range(4):
+for _ in range(num_enemies):
     enemyImgs.append(pygame.image.load("Images/bomb.png"))
     enemyX.append(random.randint(0, SCREENWIDTH - 32))
     enemyY.append(random.randint(0, 40))
@@ -93,6 +95,16 @@ def is_collision(x1, y1, x2, y2):
 def game_over_text():
     over_text = over_font.render("GAME OVER", True, black)
     screen.blit(over_text, (200, 250))
+    restart_text = font.render("Press SPACE to start a new game", True, black)
+    screen.blit(restart_text, (190, 330))
+
+def reset_game():
+    for i in range(num_targets):
+        targetX[i] = random.randint(0, SCREENWIDTH - 32)
+        targetY[i] = random.randint(0, 20)
+    for i in range(num_enemies):
+        enemyX[i] = random.randint(0, SCREENWIDTH - 32)
+        enemyY[i] = random.randint(0, 40)
 
 prev_time = time.time()
 running = True
@@ -121,6 +133,11 @@ while running:
             if event.key == pygame.K_DOWN:
                 playerY_change = player_vel
 
+            if event.key == pygame.K_SPACE and game_over:
+                score_value = 0
+                game_over = False
+                reset_game()
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                 playerX_change = 0
@@ -147,7 +164,7 @@ while running:
 
     else:
     	# Target movement
-        for i in range(4):
+        for i in range(num_targets):
             targetY[i] += targetY_change[i] * dt * target_fps
 
             if targetY[i] >= SCREENHEIGHT - 32:
@@ -165,7 +182,7 @@ while running:
             target(targetX[i], targetY[i], i)
 
     	# Enemy movement
-        for i in range(4):
+        for i in range(num_enemies):
             enemyY[i] += enemyY_change[i] * dt * target_fps
 
             if enemyY[i] >= SCREENHEIGHT - 32:
