@@ -4,6 +4,7 @@
 import pygame
 import random
 import math
+import time
 from pygame import mixer
 
 pygame.init()
@@ -17,6 +18,7 @@ player_vel = 5
 target_vel = 2
 enemy_vel = 2
 fps = 60
+target_fps = 60
 
 # Preparing the screen and the background
 screen = pygame.display.set_mode((SCREENWIDTH, SCREENHEIGHT))
@@ -92,6 +94,7 @@ def game_over_text():
     over_text = over_font.render("GAME OVER", True, black)
     screen.blit(over_text, (200, 250))
 
+prev_time = time.time()
 running = True
 game_over = False
 
@@ -99,6 +102,10 @@ game_over = False
 while running:
     screen.fill(black)
     screen.blit(background, (0, 0))
+
+    now = time.time()
+    dt = now - prev_time
+    prev_time = now
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -123,8 +130,8 @@ while running:
             running = False
 
     # Player movement
-    playerX += playerX_change
-    playerY += playerY_change
+    playerX += playerX_change * dt * target_fps
+    playerY += playerY_change * dt * target_fps
 
     if playerX <= 0:
         playerX = 0
@@ -141,7 +148,7 @@ while running:
     else:
     	# Target movement
         for i in range(4):
-            targetY[i] += targetY_change[i]
+            targetY[i] += targetY_change[i] * dt * target_fps
 
             if targetY[i] >= SCREENHEIGHT - 32:
                 targetX[i] = random.randint(0, SCREENWIDTH - 32)
@@ -159,7 +166,7 @@ while running:
 
     	# Enemy movement
         for i in range(4):
-            enemyY[i] += enemyY_change[i]
+            enemyY[i] += enemyY_change[i] * dt * target_fps
 
             if enemyY[i] >= SCREENHEIGHT - 32:
                 enemyX[i] = random.randint(0, SCREENWIDTH - 32)
